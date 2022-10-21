@@ -59,8 +59,7 @@ class GroupHelper:
         wd = self.app.wd
         wd.find_element(By.LINK_TEXT, "group page").click()
 
-    def fill_group_form(self, group):
+    def count(self):
         wd = self.app.wd
-        self.change_field("group_name", group.name)
-        self.change_field("group_header", group.header)
-        self.change_field("group_footer", group.footer)
+        self.open_groups_page()
+        return len(wd.find_elements(By.NAME, "selected[]"))

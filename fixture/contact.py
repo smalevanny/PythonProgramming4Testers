@@ -7,6 +7,38 @@ class ContactHelper:
     def __init__(self, app):
         self.app = app
 
+    def create(self, contact):
+        wd = self.app.wd
+        self.open_contacts_page()
+        # init contact creation
+        wd.find_element(By.LINK_TEXT, "add new").click()
+        self.fill_contact_form(contact)
+        # submit contact creation
+        wd.find_element(By.NAME, "submit").click()
+        self.app.return_to_home_page()
+
+    def delete_first(self):
+        wd = self.app.wd
+        self.open_contacts_page()
+        # select first contact
+        wd.find_element(By.NAME, "selected[]").click()
+        # init deletion
+        wd.find_element(By.XPATH, "//input[@value='Delete']").click()
+        # submit deletion
+        wd.switch_to.alert.accept()
+
+    def edit_first(self, contact):
+        wd = self.app.wd
+        self.open_contacts_page()
+        # select first contact
+        wd.find_element(By.NAME, "selected[]").click()
+        # init deletion
+        wd.find_element(By.XPATH, "(//img[@title='Edit'])[1]").click()
+        self.fill_contact_form(contact)
+        # submit contact update
+        wd.find_element(By.NAME, "update").click()
+        self.app.return_to_home_page()
+
     def open_contacts_page(self):
         wd = self.app.wd
         wd.find_element(By.LINK_TEXT, "home").click()
@@ -83,34 +115,7 @@ class ContactHelper:
         wd.find_element(By.NAME, "notes").clear()
         wd.find_element(By.NAME, "notes").send_keys(contact.notes)
 
-    def create(self, contact):
+    def count(self):
         wd = self.app.wd
         self.open_contacts_page()
-        # init contact creation
-        wd.find_element(By.LINK_TEXT, "add new").click()
-        self.fill_contact_form(contact)
-        # submit contact creation
-        wd.find_element(By.NAME, "submit").click()
-        self.app.return_to_home_page()
-
-    def delete_first(self):
-        wd = self.app.wd
-        self.open_contacts_page()
-        # select first contact
-        wd.find_element(By.NAME, "selected[]").click()
-        # init deletion
-        wd.find_element(By.XPATH, "//input[@value='Delete']").click()
-        # submit deletion
-        wd.switch_to.alert.accept()
-
-    def edit_first(self, contact):
-        wd = self.app.wd
-        self.open_contacts_page()
-        # select first contact
-        wd.find_element(By.NAME, "selected[]").click()
-        # init deletion
-        wd.find_element(By.XPATH, "(//img[@title='Edit'])[1]").click()
-        self.fill_contact_form(contact)
-        # submit contact update
-        wd.find_element(By.NAME, "update").click()
-        self.app.return_to_home_page()
+        return len(wd.find_elements(By.NAME, "selected[]"))
