@@ -34,7 +34,7 @@ class SessionHelper():
 
     def is_logged_in_as(self, username):
         wd = self.app.wd
-        return wd.find_element(By.CSS_SELECTOR, "form[name='logout'] b").text == f"({username})"
+        return wd.find_element(By.CSS_SELECTOR, "form[name='logout'] b").text == f"({username.lower()})"
 
     def is_logged_in(self):
         wd = self.app.wd
