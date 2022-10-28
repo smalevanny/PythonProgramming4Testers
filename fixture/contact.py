@@ -21,10 +21,12 @@ class ContactHelper:
         self.contacts_cache = None
 
     def delete_first(self):
+        self.delete(0)
+
+    def delete(self, index):
         wd = self.app.wd
         self.open_contacts_page()
-        # select first contact
-        wd.find_element(By.NAME, "selected[]").click()
+        self.select_contact(index)
         # init deletion
         wd.find_element(By.XPATH, "//input[@value='Delete']").click()
         # submit deletion
@@ -32,12 +34,14 @@ class ContactHelper:
         self.contacts_cache = None
 
     def edit_first(self, contact):
+        self.edit(0)
+
+    def edit(self, index, contact):
         wd = self.app.wd
         self.open_contacts_page()
-        # select first contact
-        wd.find_element(By.NAME, "selected[]").click()
-        # init deletion
-        wd.find_element(By.XPATH, "(//img[@title='Edit'])[1]").click()
+        self.select_contact(index)
+        # init edition
+        wd.find_elements(By.XPATH, "//img[@title='Edit']")[index].click()
         self.fill_contact_form(contact)
         # submit contact update
         wd.find_element(By.NAME, "update").click()
@@ -86,6 +90,13 @@ class ContactHelper:
                 wd.find_element(By.NAME, field_name).clear()
                 wd.find_element(By.NAME, field_name).send_keys(text)
 
+    def select_first_contact(self):
+        self.select_contact(0)
+
+    def select_contact(self, index):
+        wd = self.app.wd
+        wd.find_elements(By.NAME, "selected[]")[index].click()
+
     def count(self):
         wd = self.app.wd
         self.open_contacts_page()
@@ -93,7 +104,7 @@ class ContactHelper:
 
     contacts_cache = None
 
-    def get_contact_list(self):
+    def get_contacts_list(self):
         if self.contacts_cache is None:
             wd = self.app.wd
             self.open_contacts_page()

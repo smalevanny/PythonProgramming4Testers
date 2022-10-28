@@ -20,18 +20,24 @@ class GroupHelper:
         self.groups_cache = None
 
     def delete_first(self):
+        self.delete(1)
+
+    def delete(self, index):
         wd = self.app.wd
         self.open_groups_page()
-        self.select_first_group()
+        self.select_group(index)
         # submit deletion
         wd.find_element(By.NAME, "delete").click()
         self.return_to_groups_page()
         self.groups_cache = None
 
     def edit_first(self, group):
+        self.edit(1, group)
+
+    def edit(self, index, group):
         wd = self.app.wd
         self.open_groups_page()
-        self.select_first_group()
+        self.select_group(index)
         # init group edit
         wd.find_element(By.NAME, "edit").click()
         self.fill_group_form(group)
@@ -58,8 +64,11 @@ class GroupHelper:
             wd.find_element(By.LINK_TEXT, "groups").click()
 
     def select_first_group(self):
+        self.select_group(1)
+
+    def select_group(self, index):
         wd = self.app.wd
-        wd.find_element(By.NAME, "selected[]").click()
+        wd.find_elements(By.NAME, "selected[]")[index].click()
 
     def return_to_groups_page(self):
         wd = self.app.wd
@@ -73,7 +82,7 @@ class GroupHelper:
 
     groups_cache = None
 
-    def get_group_list(self):
+    def get_groups_list(self):
         if self.groups_cache is None:
             wd = self.app.wd
             self.open_groups_page()
