@@ -57,8 +57,7 @@ def merge_like_on_home_page(fields, contact):
     elif fields == "emails":
         list = [contact.email, contact.email2, contact.email3]
     else:
-        print(f"Unsupported value for 'fields' parameter = {fields}")
-        return ""
+        raise ValueError(f"Unrecognized value for 'fields' parameter = {fields}")
 
     return "\n".join(
         filter(lambda x: x != "",
