@@ -54,13 +54,12 @@ def clear(string):
 def merge_like_on_home_page(fields, contact):
     if fields == "phones":
         list = [contact.homenumber, contact.mobilenumber, contact.worknumber, contact.phone2]
+        list = map(lambda x: clear(x), list)
     elif fields == "emails":
         list = [contact.email, contact.email2, contact.email3]
     else:
         raise ValueError(f"Unrecognized value for 'fields' parameter = {fields}")
 
     return "\n".join(
-        filter(lambda x: x != "",
-               map(lambda x: clear(x),
-                   filter(lambda x: x is not None, list))))
+        filter(lambda x: x != "" and x is not None, list))
 
