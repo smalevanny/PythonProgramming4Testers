@@ -129,10 +129,7 @@ class ContactHelper:
                 lastname = cells[1].text
                 firstname = cells[2].text
                 address = cells[3].text
-                email = cells[4].find_elements(By.TAG_NAME, "a")[0].text
-                email2 = cells[4].find_elements(By.TAG_NAME, "a")[1].text
-                email3 = cells[4].find_elements(By.TAG_NAME, "a")[2].text
-                emails = "\n".join([email, email2, email3])
+                emails = cells[4].text
                 phones = cells[5].text
                 self.contacts_cache.append(Contact(firstname=firstname,
                                                    lastname=lastname,
