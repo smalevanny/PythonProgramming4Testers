@@ -19,8 +19,6 @@ def app(request):
             target = json.load(config_file)
     if fixture is None or not fixture.is_valid():
         fixture = Application(browser=browser, base_url=target["baseURL"])
-    print(target["username"])
-    print(target["password"])
     fixture.session.ensure_login(username=target["username"], password=target["password"])
     return fixture
 
