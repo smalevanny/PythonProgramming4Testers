@@ -20,45 +20,24 @@ class GroupHelper:
         self.groups_cache = None
 
     def delete_first(self):
-        self.delete_by_index(1)
+        self.delete(index=1)
 
-    def delete_by_index(self, index):
+    def delete(self, index=None, group=None):
         wd = self.app.wd
         self.open_groups_page()
-        self.select_group(index)
-        # submit deletion
-        wd.find_element(By.NAME, "delete").click()
-        self.return_to_groups_page()
-        self.groups_cache = None
-
-    def delete_by_id(self, id):
-        wd = self.app.wd
-        self.open_groups_page()
-        self.select_group_by_id(id)
+        self.select_group(index=index, group=group)
         # submit deletion
         wd.find_element(By.NAME, "delete").click()
         self.return_to_groups_page()
         self.groups_cache = None
 
     def edit_first(self, group):
-        self.edit_by_index(1, group)
+        self.edit(index=1, group=group)
 
-    def edit_by_index(self, index, group):
+    def edit(self, index=None, group=None):
         wd = self.app.wd
         self.open_groups_page()
-        self.select_group(index)
-        # init group edit
-        wd.find_element(By.NAME, "edit").click()
-        self.fill_group_form(group)
-        # submit group update
-        wd.find_element(By.NAME, "update").click()
-        self.return_to_groups_page()
-        self.groups_cache = None
-
-    def edit(self, group):
-        wd = self.app.wd
-        self.open_groups_page()
-        self.select_group_by_id(group.id)
+        self.select_group(index=index, group=group)
         # init group edit
         wd.find_element(By.NAME, "edit").click()
         self.fill_group_form(group)
@@ -85,11 +64,17 @@ class GroupHelper:
             wd.find_element(By.LINK_TEXT, "groups").click()
 
     def select_first_group(self):
-        self.select_group(1)
+        self.select_group(index=1)
 
-    def select_group(self, index):
+    def select_group(self, index=None, group=None):
         wd = self.app.wd
-        wd.find_elements(By.NAME, "selected[]")[index].click()
+        if index is not None:
+            wd.find_elements(By.NAME, "selected[]")[index].click()
+        elif group is not None:
+            wd.find_element(By.CSS_SELECTOR, f"input[value='{group.id}']").click()
+        else:
+            raise ValueError(f"One of 'index' or 'group' parameter should not be None")
+
 
     def select_group_by_id(self, id):
         wd = self.app.wd

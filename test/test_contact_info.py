@@ -1,9 +1,8 @@
 import re
-from random import randrange
 from model.contact import Contact
 
-def test_contact_on_home_page(app):
-    if app.contact.count() == 0:
+def test_contact_on_home_page(app, db):
+    if len(db.get_contacts_list()) == 0:
         contact = Contact(firstname="firstname",
                           middlename="middlename",
                           lastname="lastname",
@@ -29,14 +28,12 @@ def test_contact_on_home_page(app):
                           phone2="phone2",
                           notes="notes")
         app.contact.create(contact)
-    index = randrange(app.contact.count())
-    contact_from_home_page = app.contact.get_contacts_list()[index]
-    contact_from_edit_page = app.contact.get_contact_info_from_edit_page(index)
-    assert contact_from_home_page.lastname == contact_from_edit_page.lastname
-    assert contact_from_home_page.firstname == contact_from_edit_page.firstname
-    assert contact_from_home_page.address == contact_from_edit_page.address
-    assert contact_from_home_page.emails_from_home_page == merge_like_on_home_page("emails", contact_from_edit_page)
-    assert contact_from_home_page.phones_from_home_page == merge_like_on_home_page("phones", contact_from_edit_page)
+    contacts_from_home_page = app.contact.get_contacts_list()
+    contacts_from_db = db.get_contacts_list()
+    for contact in contacts_from_db:
+        contact.emails_from_home_page = merge_like_on_home_page("emails", contact)
+        contact.phones_from_home_page = merge_like_on_home_page("phones", contact)
+    assert sorted(contacts_from_home_page, key=Contact.id_or_max) == sorted(contacts_from_db, key=Contact.id_or_max)
 
 def test_phones_on_view_page(app):
     contact_from_view_page = app.contact.get_contact_info_from_view_page(0)

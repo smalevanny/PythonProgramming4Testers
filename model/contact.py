@@ -59,10 +59,12 @@ class Contact:
         self.id = id
 
     def __repr__(self):
-        return f"{self.id}:{self.firstname}:{self.lastname}"
+        return f"{self.id}:{self.firstname}:{self.lastname}:{self.emails_from_home_page}:{self.phones_from_home_page}"
 
     def __eq__(self, other):
-        return (self.id is None or other.id is None or self.id == other.id) and self.firstname == other.firstname and self.lastname == other.lastname
+        return (self.id is None or other.id is None or self.id == other.id) and self.firstname == other.firstname and self.lastname == other.lastname \
+               and (self.emails_from_home_page is None or other.emails_from_home_page is None or self.emails_from_home_page == other.emails_from_home_page) \
+               and (self.phones_from_home_page is None or other.phones_from_home_page is None or self.phones_from_home_page == other.phones_from_home_page)
 
     def id_or_max(self):
         if self.id:

@@ -34,7 +34,7 @@ def test_edit_contact(app, db, check_ui):
     contact.firstname = "firstname2"
     contact.lastname = "lastname2"
     contact.address = "address2"
-    app.contact.edit(contact)
+    app.contact.edit(contact=contact)
     assert len(old_contacts) == app.contact.count()
     new_contacts = db.get_contacts_list()
     assert sorted(old_contacts, key=Contact.id_or_max) == sorted(new_contacts, key=Contact.id_or_max)

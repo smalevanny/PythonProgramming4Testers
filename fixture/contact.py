@@ -23,22 +23,12 @@ class ContactHelper:
         self.contacts_cache = None
 
     def delete_first(self):
-        self.delete_by_index(0)
+        self.delete(index=0)
 
-    def delete_by_index(self, index):
+    def delete(self, index=None, contact=None):
         wd = self.app.wd
         self.open_contacts_page()
-        self.select_contact(index)
-        # init deletion
-        wd.find_element(By.XPATH, "//input[@value='Delete']").click()
-        # submit deletion
-        wd.switch_to.alert.accept()
-        self.contacts_cache = None
-
-    def delete_by_id(self, id):
-        wd = self.app.wd
-        self.open_contacts_page()
-        self.select_contact_by_id(id)
+        self.select_contact(index=index, contact=contact)
         # init deletion
         wd.find_element(By.XPATH, "//input[@value='Delete']").click()
         # submit deletion
@@ -46,38 +36,27 @@ class ContactHelper:
         self.contacts_cache = None
 
     def edit_first(self, contact):
-        self.edit_by_index(0)
+        self.edit(index=0)
 
-    def edit_by_index(self, index, contact):
-        wd = self.open_edit_form_by_index(index)
+    def edit(self, index=None, contact=None):
+        wd = self.open_edit_form(index=index, contact=contact)
         self.fill_contact_form(contact)
         # submit contact update
         wd.find_element(By.NAME, "update").click()
         self.app.return_to_home_page()
         self.contacts_cache = None
 
-    def edit(self, contact):
-        wd = self.open_edit_form(contact)
-        self.fill_contact_form(contact)
-        # submit contact update
-        wd.find_element(By.NAME, "update").click()
-        self.app.return_to_home_page()
-        self.contacts_cache = None
-
-    def open_edit_form_by_index(self, index):
+    def open_edit_form(self, index=None, contact=None):
         wd = self.app.wd
         self.open_contacts_page()
-        self.select_contact(index)
+        self.select_contact(index=index, contact=contact)
         # init edition
-        wd.find_elements(By.XPATH, "//img[@title='Edit']")[index].click()
-        return wd
-
-    def open_edit_form(self, contact):
-        wd = self.app.wd
-        self.open_contacts_page()
-        self.select_contact_by_id(contact.id)
-        # init edition
-        wd.find_element(By.XPATH, f"//input[@id='{contact.id}']/../..//td[8]").click()
+        if index is not None:
+            wd.find_elements(By.XPATH, "//img[@title='Edit']")[index].click()
+        elif contact is not None:
+            wd.find_element(By.XPATH, f"//input[@id='{contact.id}']/../..//td[8]").click()
+        else:
+            raise ValueError(f"One of 'index' or 'contact' parameter should not be None")
         return wd
 
     def open_view_page(self, index):
@@ -131,15 +110,16 @@ class ContactHelper:
                 wd.find_element(By.NAME, field_name).send_keys(text)
 
     def select_first_contact(self):
-        self.select_contact(0)
+        self.select_contact(index=0)
 
-    def select_contact(self, index):
+    def select_contact(self, index=None, contact=None):
         wd = self.app.wd
-        wd.find_elements(By.NAME, "selected[]")[index].click()
-
-    def select_contact_by_id(self, id):
-        wd = self.app.wd
-        wd.find_element(By.CSS_SELECTOR, f"input[id='{id}']").click()
+        if index is not None:
+            wd.find_elements(By.NAME, "selected[]")[index].click()
+        elif contact is not None:
+            wd.find_element(By.CSS_SELECTOR, f"input[id='{contact.id}']").click()
+        else:
+            raise ValueError(f"One of 'index' or 'contact' parameter should not be None")
 
     def count(self):
         wd = self.app.wd
@@ -171,7 +151,7 @@ class ContactHelper:
 
     def get_contact_info_from_edit_page(self, index):
         wd = self.app.wd
-        self.open_edit_form_by_index(index)
+        self.open_edit_form(index=index)
         id = wd.find_element(By.NAME, "id").get_attribute("value")
         firstname = wd.find_element(By.NAME, "firstname").get_attribute("value")
         middlename = wd.find_element(By.NAME, "middlename").get_attribute("value")
