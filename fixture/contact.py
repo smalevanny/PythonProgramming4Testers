@@ -23,9 +23,9 @@ class ContactHelper:
         self.contacts_cache = None
 
     def delete_first(self):
-        self.delete(0)
+        self.delete_by_index(0)
 
-    def delete(self, index):
+    def delete_by_index(self, index):
         wd = self.app.wd
         self.open_contacts_page()
         self.select_contact(index)
@@ -35,23 +35,49 @@ class ContactHelper:
         wd.switch_to.alert.accept()
         self.contacts_cache = None
 
-    def edit_first(self, contact):
-        self.edit(0)
+    def delete_by_id(self, id):
+        wd = self.app.wd
+        self.open_contacts_page()
+        self.select_contact_by_id(id)
+        # init deletion
+        wd.find_element(By.XPATH, "//input[@value='Delete']").click()
+        # submit deletion
+        wd.switch_to.alert.accept()
+        self.contacts_cache = None
 
-    def edit(self, index, contact):
-        wd = self.open_edit_form(index)
+    def edit_first(self, contact):
+        self.edit_by_index(0)
+
+    def edit_by_index(self, index, contact):
+        wd = self.open_edit_form_by_index(index)
         self.fill_contact_form(contact)
         # submit contact update
         wd.find_element(By.NAME, "update").click()
         self.app.return_to_home_page()
         self.contacts_cache = None
 
-    def open_edit_form(self, index):
+    def edit(self, contact):
+        wd = self.open_edit_form(contact)
+        self.fill_contact_form(contact)
+        # submit contact update
+        wd.find_element(By.NAME, "update").click()
+        self.app.return_to_home_page()
+        self.contacts_cache = None
+
+    def open_edit_form_by_index(self, index):
         wd = self.app.wd
         self.open_contacts_page()
         self.select_contact(index)
         # init edition
         wd.find_elements(By.XPATH, "//img[@title='Edit']")[index].click()
+        return wd
+
+    def open_edit_form(self, contact):
+        wd = self.app.wd
+        self.open_contacts_page()
+        self.select_contact_by_id(contact.id)
+        # init edition
+        wd.find_element(By.XPATH, f"//input[@id='{contact.id}']/../..//td[8]").click()
         return wd
 
     def open_view_page(self, index):
@@ -111,6 +137,10 @@ class ContactHelper:
         wd = self.app.wd
         wd.find_elements(By.NAME, "selected[]")[index].click()
 
+    def select_contact_by_id(self, id):
+        wd = self.app.wd
+        wd.find_element(By.CSS_SELECTOR, f"input[id='{id}']").click()
+
     def count(self):
         wd = self.app.wd
         self.open_contacts_page()
@@ -141,7 +171,7 @@ class ContactHelper:
 
     def get_contact_info_from_edit_page(self, index):
         wd = self.app.wd
-        self.open_edit_form(index)
+        self.open_edit_form_by_index(index)
         id = wd.find_element(By.NAME, "id").get_attribute("value")
         firstname = wd.find_element(By.NAME, "firstname").get_attribute("value")
         middlename = wd.find_element(By.NAME, "middlename").get_attribute("value")
