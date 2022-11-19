@@ -46,6 +46,25 @@ class ContactHelper:
         self.app.return_to_home_page()
         self.contacts_cache = None
 
+    def add_to_group(self, contact, group):
+        wd = self.app.wd
+        self.open_contacts_page()
+        self.select_contact(contact=contact)
+        self.select_group(group)
+        wd.find_element(By.XPATH, "//input[@name='add']").click()
+        self.open_contacts_page()
+        self.contacts_cache = None
+
+    def remove_from_group(self, contact, group):
+        wd = self.app.wd
+        self.open_contacts_page()
+        #filter contacts by group
+        wd.find_element(By.XPATH, f"//select[@name='group']//option[@value='{group.id}']").click()
+        self.select_contact(contact=contact)
+        wd.find_element(By.XPATH, "//input[@name='remove']").click()
+        self.open_contacts_page()
+        self.contacts_cache = None
+
     def open_edit_form(self, index=None, contact=None):
         wd = self.app.wd
         self.open_contacts_page()
@@ -120,6 +139,9 @@ class ContactHelper:
             wd.find_element(By.CSS_SELECTOR, f"input[id='{contact.id}']").click()
         else:
             raise ValueError(f"One of 'index' or 'contact' parameter should not be None")
+    def select_group(self, group):
+        wd = self.app.wd
+        wd.find_element(By.XPATH, f"//select[@name='to_group']//option[@value='{group.id}']").click()
 
     def count(self):
         wd = self.app.wd
