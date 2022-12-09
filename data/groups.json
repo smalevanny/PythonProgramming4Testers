@@ -1,0 +1,23 @@
+[
+  {
+    "py/object": "model.group.Group",
+    "name": "",
+    "header": "",
+    "footer": "",
+    "id": null
+  },
+  {
+    "py/object": "model.group.Group",
+    "name": "name i 1C",
+    "header": "headerh@brp (#;##0Lf=*v",
+    "footer": "footerc=t=/CGg10Kv |T?",
+    "id": null
+  },
+  {
+    "py/object": "model.group.Group",
+    "name": "name",
+    "header": "header!%NpXyh",
+    "footer": "footerY [",
+    "id": null
+  }
+]
